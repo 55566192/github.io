@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta
+      name="description"
+      content="一个手机优先、响应式的单页网站模板：支持可折叠菜单、平滑滚动、现代 UI 与良好的可访问性。"
+    />
+    <title>Mobile Website Starter</title>
+
+    <style>
+      :root {
+        --bg: #070a13;
+        --panel: #0b1020;
+        --card: #0f1730;
+        --text: #eaf0ff;
+        --muted: rgba(234, 240, 255, 0.74);
+        --line: rgba(234, 240, 255, 0.14);
+        --brand: #7c5cff;
+        --brand2: #28d7ff;
+        --good: #33d69f;
+        --warn: #ffcc66;
+        --radius: 18px;
+        --shadow: 0 12px 40px rgba(0, 0, 0, 0.42);
+        --max: 1100px;
+        --safe-top: env(safe-area-inset-top);
+        --safe-bottom: env(safe-area-inset-bottom);
+        --safe-left: env(safe-area-inset-left);
+        --safe-right: env(safe-area-inset-right);
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f6f8ff;
+          --panel: #ffffff;
+          --card: #ffffff;
+          --text: #0b1020;
+          --muted: rgba(11, 16, 32, 0.72);
+          --line: rgba(11, 16, 32, 0.12);
+          --shadow: 0 12px 40px rgba(16, 24, 40, 0.12);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", Arial,
+          "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: radial-gradient(1000px 700px at 15% 10%, rgba(124, 92, 255, 0.25), transparent),
+          radial-gradient(900px 650px at 85% 0%, rgba(40, 215, 255, 0.18), transparent),
+          linear-gradient(180deg, var(--bg), rgba(7, 10, 19, 0.85));
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+      .container {
+        width: min(var(--max), calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      /* Skip link (a11y) */
+      .skip {
+        position: absolute;
+        left: -999px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
+      .skip:focus {
+        left: 16px;
+        top: calc(12px + var(--safe-top));
+        width: auto;
+        height: auto;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: var(--panel);
+        outline: 2px solid var(--brand2);
+        z-index: 9999;
+      }
+
+      /* Header */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        background: color-mix(in srgb, var(--panel) 74%, transparent);
+        border-bottom: 1px solid var(--line);
+        padding-top: var(--safe-top);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 0;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
+      .logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--brand), var(--brand2));
+        box-shadow: 0 10px 28px rgba(124, 92, 255, 0.25);
+      }
+
+      .menu {
+        display: none;
+        align-items: center;
+        gap: 14px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .menu a {
+        padding: 10px 10px;
+        border-radius: 12px;
+      }
+      .menu a:focus-visible,
+      .menu a:hover {
+        background: color-mix(in srgb, var(--line) 55%, transparent);
+        color: var(--text);
+      }
+      .navActions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 72%, transparent);
+        padding: 11px 14px;
+        border-radius: 14px;
+        font-weight: 700;
+        color: var(--text);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        border-color: color-mix(in srgb, var(--brand2) 45%, var(--line));
+      }
+      .btn:active {
+        transform: translateY(0px);
+      }
+      .btnPrimary {
+        border: none;
+        background: linear-gradient(135deg, var(--brand), var(--brand2));
+        color: #06101b;
+      }
+      .btnPrimary:hover {
+        filter: brightness(1.02);
+        transform: translateY(-1px);
+      }
+      .btnIcon {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border-radius: 14px;
+      }
+
+      /* Mobile drawer */
+      .drawer {
+        display: none;
+        border-top: 1px solid var(--line);
+        padding: 10px 0 calc(12px + var(--safe-bottom));
+      }
+      .drawer a {
+        display: block;
+        padding: 12px 10px;
+        border-radius: 14px;
+        color: var(--muted);
+        font-weight: 650;
+      }
+      .drawer a:hover,
+      .drawer a:focus-visible {
+        background: color-mix(in srgb, var(--line) 55%, transparent);
+        color: var(--text);
+      }
+      .drawerOpen .drawer {
+        display: block;
+      }
+
+      /* Hero */
+      main {
+        padding-bottom: calc(64px + var(--safe-bottom));
+      }
+      .hero {
+        padding: 26px 0 10px;
+      }
+      .heroGrid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 70%, transparent);
+        border-radius: 999px;
+        color: var(--muted);
+        font-weight: 650;
+      }
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--good);
+        box-shadow: 0 0 0 6px rgba(51, 214, 159, 0.13);
+      }
+      h1 {
+        margin: 14px 0 10px;
+        font-size: clamp(28px, 6vw, 44px);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+      }
+      .lead {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 15.5px;
+        line-height: 1.55;
+      }
+      .ctaRow {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .note {
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .heroCard {
+        border: 1px solid var(--line);
+        background: linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--card) 88%, transparent),
+            color-mix(in srgb, var(--panel) 78%, transparent)
+          )
+          padding-box;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .heroCardTop {
+        padding: 14px 14px 12px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .kbd {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted);
+        font-weight: 650;
+        font-size: 13px;
+      }
+      .kbd span {
+        padding: 4px 8px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 74%, transparent);
+        color: var(--text);
+      }
+      .heroCardBody {
+        padding: 14px;
+      }
+      .statGrid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .stat {
+        padding: 12px;
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 72%, transparent);
+        border-radius: 16px;
+      }
+      .stat b {
+        display: block;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+      }
+      .stat small {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-weight: 650;
+      }
+      .stat em {
+        color: var(--warn);
+        font-style: normal;
+        font-weight: 800;
+      }
+
+      /* Sections */
+      section {
+        padding: 22px 0;
+      }
+      .sectionHead {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .sectionHead h2 {
+        margin: 0;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+      }
+      .sectionHead p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13.5px;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .card {
+        padding: 14px;
+        border-radius: var(--radius);
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 76%, transparent);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+      }
+      .card h3 {
+        margin: 0 0 6px;
+        font-size: 16px;
+      }
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 14px;
+      }
+
+      /* Footer */
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 18px 0 calc(18px + var(--safe-bottom));
+        color: var(--muted);
+      }
+      .footerRow {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+        justify-content: space-between;
+      }
+      .links {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .links a {
+        padding: 8px 10px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 74%, transparent);
+      }
+
+      /* Desktop enhancements */
+      @media (min-width: 860px) {
+        .menu {
+          display: flex;
+        }
+        .btnMenu {
+          display: none;
+        }
+        .drawer {
+          display: none !important;
+        }
+        .hero {
+          padding: 44px 0 18px;
+        }
+        .heroGrid {
+          grid-template-columns: 1.2fr 0.8fr;
+          gap: 18px;
+          align-items: center;
+        }
+        .cards {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .footerRow {
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+
+      /* Reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        .btn {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#content">跳到主要内容</a>
+
+    <header id="top">
+      <div class="container">
+        <div class="nav" aria-label="顶部导航">
+          <a class="brand" href="#top" aria-label="返回顶部">
+            <span class="logo" aria-hidden="true"></span>
+            <span>Mobile Starter</span>
+          </a>
+
+          <nav class="menu" aria-label="主菜单">
+            <a href="#features">功能</a>
+            <a href="#how">流程</a>
+            <a href="#contact">联系</a>
+          </nav>
+
+          <div class="navActions">
+            <a class="btn btnPrimary" href="#contact">开始使用</a>
+            <button
+              class="btn btnIcon btnMenu"
+              id="menuBtn"
+              type="button"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="mobileDrawer"
+              title="打开菜单"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M4 7h16M4 12h16M4 17h16"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="drawer" id="mobileDrawer" aria-label="移动端菜单">
+          <a href="#features">功能</a>
+          <a href="#how">流程</a>
+          <a href="#contact">联系</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="content">
+      <div class="container">
+        <section class="hero" aria-label="首屏">
+          <div class="heroGrid">
+            <div>
+              <div class="pill">
+                <span class="dot" aria-hidden="true"></span>
+                <span>手机优先 · 秒开 · 自适应</span>
+              </div>
+              <h1>做一个真正好用的移动端网站</h1>
+              <p class="lead">
+                这个页面已经帮你配好：<b>viewport</b>、可折叠菜单、卡片式内容区、按钮与排版、深浅色自动适配、基础无障碍与更顺滑的触控体验。
+              </p>
+              <div class="ctaRow">
+                <a class="btn btnPrimary" href="#features">看功能</a>
+                <a class="btn" href="#how">看流程</a>
+              </div>
+              <p class="note">提示：你只需要改文案即可上线；如需加图片/接口/多页，也可以继续扩展。</p>
+            </div>
+
+            <aside class="heroCard" aria-label="预览卡片">
+              <div class="heroCardTop">
+                <strong>快速指标</strong>
+                <div class="kbd" aria-label="键盘提示">
+                  <span>Tab</span> <span>Enter</span>
+                </div>
+              </div>
+              <div class="heroCardBody">
+                <div class="statGrid">
+                  <div class="stat">
+                    <b>Mobile-first</b>
+                    <small>默认手机布局</small>
+                  </div>
+                  <div class="stat">
+                    <b>响应式</b>
+                    <small>桌面自动增强</small>
+                  </div>
+                  <div class="stat">
+                    <b><em>Safe Area</em></b>
+                    <small>刘海屏适配</small>
+                  </div>
+                  <div class="stat">
+                    <b>可访问</b>
+                    <small>跳转链接/焦点态</small>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="features" aria-label="功能">
+          <div class="sectionHead">
+            <h2>你现在已经拥有</h2>
+            <p>适合手机端的基本骨架</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <h3>正确的移动端基础</h3>
+              <p>包含 `meta viewport`、触控友好的按钮尺寸、可读的字号与行高，避免“缩放后才能看”。</p>
+            </article>
+            <article class="card">
+              <h3>可折叠菜单</h3>
+              <p>小屏显示汉堡按钮，大屏显示横向菜单；点击后自动收起，体验更顺手。</p>
+            </article>
+            <article class="card">
+              <h3>现代 UI</h3>
+              <p>卡片、阴影、渐变与一致的圆角；并支持系统深浅色自动切换。</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="how" aria-label="流程">
+          <div class="sectionHead">
+            <h2>怎么改成你自己的站</h2>
+            <p>3 分钟替换文案</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <h3>1) 改品牌名</h3>
+              <p>把顶部 `Mobile Starter` 和标题 `Mobile Website Starter` 改成你的项目名。</p>
+            </article>
+            <article class="card">
+              <h3>2) 改首屏卖点</h3>
+              <p>把 H1 和下面的描述换成你的核心优势；两个按钮链接也可改成下载/咨询等。</p>
+            </article>
+            <article class="card">
+              <h3>3) 改三张卡片</h3>
+              <p>把“功能/流程”的卡片改成你的产品功能、价格、案例、FAQ 等模块即可。</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="contact" aria-label="联系">
+          <div class="sectionHead">
+            <h2>联系我</h2>
+            <p>示例表单（前端演示）</p>
+          </div>
+
+          <div class="card">
+            <form id="contactForm">
+              <div style="display: grid; grid-template-columns: 1fr; gap: 10px">
+                <label>
+                  <div style="font-weight: 700; margin: 0 0 6px">称呼</div>
+                  <input
+                    name="name"
+                    autocomplete="name"
+                    required
+                    placeholder="例如：王同学"
+                    style="
+                      width: 100%;
+                      padding: 12px 12px;
+                      border-radius: 14px;
+                      border: 1px solid var(--line);
+                      background: color-mix(in srgb, var(--panel) 78%, transparent);
+                      color: var(--text);
+                      outline: none;
+                    "
+                  />
+                </label>
+                <label>
+                  <div style="font-weight: 700; margin: 0 0 6px">联系方式</div>
+                  <input
+                    name="contact"
+                    autocomplete="email"
+                    required
+                    placeholder="邮箱/微信/手机号"
+                    style="
+                      width: 100%;
+                      padding: 12px 12px;
+                      border-radius: 14px;
+                      border: 1px solid var(--line);
+                      background: color-mix(in srgb, var(--panel) 78%, transparent);
+                      color: var(--text);
+                      outline: none;
+                    "
+                  />
+                </label>
+                <label>
+                  <div style="font-weight: 700; margin: 0 0 6px">需求</div>
+                  <textarea
+                    name="message"
+                    rows="4"
+                    required
+                    placeholder="简单描述一下你的需求..."
+                    style="
+                      width: 100%;
+                      padding: 12px 12px;
+                      border-radius: 14px;
+                      border: 1px solid var(--line);
+                      background: color-mix(in srgb, var(--panel) 78%, transparent);
+                      color: var(--text);
+                      outline: none;
+                      resize: vertical;
+                    "
+                  ></textarea>
+                </label>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center">
+                  <button class="btn btnPrimary" type="submit">提交</button>
+                  <button class="btn" type="reset">清空</button>
+                  <span id="formHint" style="color: var(--muted); font-size: 13px"></span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer aria-label="页脚">
+      <div class="container">
+        <div class="footerRow">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span class="logo" aria-hidden="true" style="width: 26px; height: 26px; border-radius: 10px"></span>
+            <strong style="color: var(--text)">Mobile Starter</strong>
+          </div>
+          <div class="links" aria-label="页脚链接">
+            <a href="#top">回到顶部</a>
+            <a href="#features">功能</a>
+            <a href="#contact">联系</a>
+          </div>
+          <small>© <span id="year"></span> 你的品牌名. All rights reserved.</small>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const menuBtn = document.getElementById("menuBtn");
+        const drawer = document.getElementById("mobileDrawer");
+        const year = document.getElementById("year");
+        const form = document.getElementById("contactForm");
+        const hint = document.getElementById("formHint");
+
+        year.textContent = String(new Date().getFullYear());
+
+        function setDrawer(open) {
+          root.classList.toggle("drawerOpen", open);
+          if (menuBtn) menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+          if (!open) menuBtn && menuBtn.focus();
+        }
+
+        if (menuBtn) {
+          menuBtn.addEventListener("click", () => {
+            const open = !root.classList.contains("drawerOpen");
+            setDrawer(open);
+            if (open) drawer && drawer.querySelector("a") && drawer.querySelector("a").focus();
+          });
+        }
+
+        // 点击菜单项后自动收起
+        if (drawer) {
+          drawer.addEventListener("click", (e) => {
+            const t = e.target;
+            if (t && t.tagName === "A") setDrawer(false);
+          });
+        }
+
+        // Esc 关闭抽屉
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && root.classList.contains("drawerOpen")) setDrawer(false);
+        });
+
+        // 表单演示：不提交到服务器，只提示
+        if (form) {
+          form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (hint) hint.textContent = "已提交（演示）：如需真实提交，可接入后端/表单服务。";
+            form.reset();
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
